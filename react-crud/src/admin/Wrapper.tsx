@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import ThemeButton from '../components/ThemeButton';
-import Navbar from '../components/Navbar';
-import Menu from '../components/Menu';
+import ThemeButton from './components/ThemeButton';
+import Navbar from './components/Navbar';
+import Menu from './components/Menu';
 
 const Wrapper = (props: PropsWithChildren<any>) => {
     return (
