@@ -1,6 +1,9 @@
-import { Prop } from "@nestjs/mongoose";
-import { Schema, Document, model } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
+export type ProductDocument = Product & Document;
+
+@Schema()
 export class Product {
     @Prop()
     id: number;
@@ -15,13 +18,4 @@ export class Product {
     likes: string;
 }
 
-export interface ProductDocument extends Document {
-    id: number;
-    title: string;
-    image: string;
-    likes: string;
-}
-
-export const ProductSchema = new Schema(Product, {autoCreate: true});
-
-export const ProductModel = model<ProductDocument>('Product', ProductSchema);
+export const ProductSchema = SchemaFactory.createForClass(Product);
