@@ -1,10 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('products')
 export class ProductController {
 
-    constructor(private productService: ProductService) {}
+    constructor(
+        private productService: ProductService,
+        @Inject('PRODUCT_SERVICE') private readonly client: ClientProxy) {}
 
     @Get()
     async allProducts() {
@@ -15,11 +18,15 @@ export class ProductController {
     async createProduct(
         @Body('title') title: string,
         @Body('image') image: string) {
-        return this.productService.createProductService({title, image});
+        
+        const product = await this.productService.createProductService({title, image});
+        this.client.emit('product_created', product);
+        return product;
     }
 
     @Get(':id')
     async getProductById(@Param('id') id: number) {
+        
         return this.productService.getProductByIdService(id);
     }
 
@@ -28,12 +35,18 @@ export class ProductController {
         @Param('id') id: number,
         @Body('title') title: string,
         @Body('image') image: string) {
-        return this.productService.updateProductByIdService(id, {title, image});
+        
+        await this.productService.updateProductByIdService(id, {title, image});
+        const product = await this.productService.getProductByIdService(id);
+        this.client.emit('product_updated', product);
+        return product;
     }
 
     @Delete(':id')
-    async deleteProductById(@Param('id') id: number) {
-        return this.productService.deleteProductByIdService(id);
+    async deleteProductById(@Param('id') id: number) { 
+        
+        await this.productService.deleteProductByIdService(id);
+        this.client.emit('product_deleted', id);
     }
 
 }
