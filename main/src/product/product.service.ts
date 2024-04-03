@@ -10,13 +10,22 @@ export class ProductService {
     ) {}
 
     async getAllProducts(): Promise<Product[]>{
-        return await this.productModel.find().exec();
+        return this.productModel.find();
     }
 
     async createProduct(product: any): Promise<Product> {
-        console.log('the product is created');
         return new this.productModel(product).save();
     }
 
+    async updateProduct(id: number, product: any): Promise<any> {
+        return this.productModel.findOneAndUpdate({id}, product);
+    }
 
+    async findOne(id:number): Promise<Product> {
+        return this.productModel.findOne({id});
+    }
+
+    async deleteProduct(id: number): Promise<void> {
+        this.productModel.deleteOne({id});
+    }
 }
