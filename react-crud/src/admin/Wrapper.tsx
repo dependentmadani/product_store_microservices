@@ -45,7 +45,6 @@ const Wrapper = (props: PropsWithChildren<any>) => {
                             </div>
                         </div>
 
-                        <h2>Section title</h2>
                         {props.children}
                         <canvas className="my-4 w-100" id="myChart" width="900" height="380"></canvas>
                     </main>
